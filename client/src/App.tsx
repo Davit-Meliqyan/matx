@@ -24,14 +24,6 @@ const CompanyLayout = lazy(
 const UserAdd = lazy(() => import("./pages/Administration/User/UserAdd"));
 const UserEdit = lazy(() => import("./pages/Administration/User/UserEdit"));
 
-// Position
-const PositionAdd = lazy(
-  () => import("./pages/Administration/Position/PositionAdd")
-);
-const PositionEdit = lazy(
-  () => import("./pages/Administration/Position/PositionEdit")
-);
-
 // Roles
 const RolesAdd = lazy(() => import("./pages/Administration/Roles/RolesAdd"));
 const RolesEdit = lazy(() => import("./pages/Administration/Roles/RolesEdit"));
@@ -66,12 +58,6 @@ function App() {
             <Route path="administration">
               {/* Company (Department) */}
               <Route path="company" element={<CompanyLayout />} />
-
-              {/* Position */}
-              <Route path="positions" element={<AdministrationLayout />}>
-                <Route path="add" element={<PositionAdd />} />
-                <Route path="edit/:id" element={<PositionEdit />} />
-              </Route>
 
               {/* Users */}
               <Route path="members" element={<AdministrationLayout />}>

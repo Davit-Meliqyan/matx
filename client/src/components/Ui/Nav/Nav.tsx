@@ -42,7 +42,7 @@ const navItems: NavItem[] = [
     title: "Administration",
     children: [
       { to: "/administration/company", title: "Company" },
-      { to: "/administration/positions", title: "Positions" },
+      // { to: "/administration/positions", title: "Positions" },
       { to: "/administration/members", title: "Members" },
       { to: "/administration/roles", title: "Roles" },
       { to: "/administration/access", title: "Access" },
