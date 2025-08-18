@@ -36,13 +36,6 @@ jobs:
         working-directory: client
         run: npm run build
 
-      - name: Prepare Dockerfile
-        run: |
-          echo 'FROM nginx:alpine
-          COPY client/build /usr/share/nginx/html
-          EXPOSE 80
-          CMD ["nginx", "-g", "daemon off;"]' > Dockerfile
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -51,9 +44,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest .
+        run: docker build -t ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest .
 
       - name: Push Docker image
-        run: |
-          docker push ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest
+        run: docker push ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest
