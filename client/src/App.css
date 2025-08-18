@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "MyFont"; /* Название вашего шрифта */
+  src: url("/fonts/inter/Inter_18pt-Regular.ttf") format("truetype"); /* Путь к файлу обычного начертания шрифта */
+  font-weight: normal; /* Обычное начертание шрифта */
+}
+
+@font-face {
+  font-family: "MyFont";
+  src: url("/fonts/inter/Inter_18pt-Bold.ttf") format("truetype"); /* Путь к файлу жирного начертания шрифта */
+  font-weight: bold; /* Жирное начертание шрифта */
+}
+
+@font-face {
+  font-family: "MyFont";
+  src: url("/fonts/inter/Inter_18pt-Medium.ttf") format("truetype"); /* Путь к файлу полужирного начертания шрифта */
+  font-weight: 500; /* Полужирное начертание шрифта (обычно используется значение 600 для полужирного) */
+}
+
+@font-face {
+  font-family: "MyFont";
+  src: url("/fonts/inter/Inter_18pt-SemiBold.ttf") format("truetype"); /* Путь к файлу полужирного начертания шрифта */
+  font-weight: 600; /* Полужирное начертание шрифта (обычно используется значение 600 для полужирного) */
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+input,
+textarea {
+  resize: none;
+  outline: none;
+}
+
+button {
+  background: none;
+  cursor: pointer;
+}
+
+html,
+body {
+  height: 100%;
+  line-height: 1;
+  scroll-behavior: smooth;
+  font-family: "MyFont";
+  background-color: #ecf0f2;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+main {
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+/*_container*/
+[class*="_container"] {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 50px;
+  margin: 0 auto;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  width: 4px;
+  background-color: #b6b6b6;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  width: 4px;
+  background-color: #1d4ed8;
+}
