@@ -47,7 +47,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest .
+        run: |
+          docker build \
+            --build-arg VITE_API_URL=http://62.169.23.81:8080/ \
+            --build-arg VITE_API_IMG=http://62.169.23.81:9000/ \
+            -t ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest .
 
       - name: Push Docker image
         run: docker push ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest
