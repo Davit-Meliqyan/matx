@@ -37,7 +37,7 @@ jobs:
           cd client
           npm install
           npm run build
-          cp -r build ../build
+          cp -r dist ../build
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
