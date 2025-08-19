@@ -6,12 +6,11 @@ WORKDIR /app/client
 
 ARG VITE_API_URL
 ARG VITE_API_IMG
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_API_IMG=$VITE_API_IMG
 
-# npm install
 RUN npm install
-
-# передаем переменные прямо в build
-RUN VITE_API_URL=$VITE_API_URL VITE_API_IMG=$VITE_API_IMG npm run build
+RUN npm run build
 
 FROM nginx:alpine
 COPY --from=build /app/client/dist /usr/share/nginx/html
