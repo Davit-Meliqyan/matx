@@ -17,6 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set lowercase repository owner
+        id: repo
+        run: echo "owner_lower=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -29,8 +33,8 @@ jobs:
         run: npm install
 
       - name: Build React app
-        working-directory: client
         run: |
+          cd client
           npm install
           npm run build
           cp -r dist ../build
@@ -43,8 +47,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/matx:latest .
+        run: docker build -t ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest .
 
       - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository_owner }}/matx:latest
+        run: docker push ghcr.io/${{ steps.repo.outputs.owner_lower }}/matx:latest
