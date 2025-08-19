@@ -4,6 +4,8 @@ import { CiEdit, CiTrash } from "react-icons/ci";
 import { getFileIcon } from "../../../../../../utils/getFileIcon";
 import { LicenseCompany } from "../../../../../../types/dynamicTables";
 import dayjs from "dayjs";
+const API_BASE_URL_IMG =
+    import.meta.env.VITE_API_IMG || "http://62.169.23.81:9000";
 
 interface LicenseRowProps {
   license: LicenseCompany;
@@ -16,6 +18,8 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
   onDelete,
   onEdit,
 }) => {
+  
+
   return (
     <tr>
       {/* Icons */}
@@ -25,7 +29,7 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
             license.fileURLs.map((file) => (
               <a
                 key={file}
-                href={`/images/files/${file}`}
+                href={`${API_BASE_URL_IMG}/files/${file}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 title={file.split("/").pop()}
@@ -44,7 +48,7 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
         <div className="flex gap-1">
           {license.fileURLs && license.fileURLs.length > 0 ? (
             license.fileURLs.map((file) => (
-              <a key={file} href={`/images/files/${file}`} download>
+              <a key={file} href={`${API_BASE_URL_IMG}/files/${file}`} download>
                 <AiOutlineDownload
                   title="Download"
                   className="text-[24px] cursor-pointer transition-all duration-300 hover:text-green-700"
