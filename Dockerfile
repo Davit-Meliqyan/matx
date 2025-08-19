@@ -7,14 +7,26 @@ WORKDIR /app/client
 ARG VITE_API_URL
 ARG VITE_API_IMG
 
-ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_API_IMG=$VITE_API_IMG
-
+# npm install
 RUN npm install
-RUN npm run build
+
+# передаем переменные прямо в build
+RUN VITE_API_URL=$VITE_API_URL VITE_API_IMG=$VITE_API_IMG npm run build
 
 FROM nginx:alpine
 COPY --from=build /app/client/dist /usr/share/nginx/html
-COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
 
-CMD envsubst '$VITE_API_URL $VITE_API_IMG' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
+RUN rm /etc/nginx/conf.d/default.conf
+COPY <<EOF /etc/nginx/conf.d/default.conf
+server {
+    listen 80;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files \$uri /index.html;
+    }
+}
+EOF
+
+CMD ["nginx", "-g", "daemon off;"]
