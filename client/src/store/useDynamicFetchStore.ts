@@ -3,32 +3,46 @@ import { create } from "zustand";
 import { Item } from "../types/item.interface";
 import { toast } from "react-toastify";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://62.169.23.81:8080/';
+const normalizeUrl = (url: string) => url.replace(/\/+$/, '');
+const API_BASE = normalizeUrl(API_BASE_URL);
+
+const apiCall = async (endpoint: string, options: RequestInit = {}) => {
+  const cleanEndpoint = endpoint.replace(/^\//, '');
+  const fullUrl = `${API_BASE}/${cleanEndpoint}`;
+
+  console.log('API Call:', fullUrl); // Для отладки
+
+  const response = await fetch(fullUrl, options);
+  return response;
+};
+
 type SidebarState = {
   items: Record<string, Item[]>;
   setItems: (section: string, items: Item[]) => void;
   fetchItems: (
-    section: string,
-    params?: Record<string, any>
+      section: string,
+      params?: Record<string, any>
   ) => Promise<Item[]>;
   fetchItemById: (
-    section: string,
-    id: string,
-    params?: Record<string, any>
+      section: string,
+      id: string,
+      params?: Record<string, any>
   ) => Promise<Item>;
   createItem: (
-    section: string,
-    item: Omit<Item, "id">,
-    params?: Record<string, any>
+      section: string,
+      item: Omit<Item, "id">,
+      params?: Record<string, any>
   ) => Promise<void>;
   updateItem: (
-    section: string,
-    item: Item,
-    params?: Record<string, any>
+      section: string,
+      item: Item,
+      params?: Record<string, any>
   ) => Promise<void>;
   deleteItem: (
-    section: string,
-    id: string,
-    params?: Record<string, any>
+      section: string,
+      id: string,
+      params?: Record<string, any>
   ) => Promise<void>;
 
   uploadFile: (section: string, file: File) => Promise<string>;
@@ -53,24 +67,24 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   items: {},
 
   setItems: (section, items) =>
-    set((state) => ({
-      items: {
-        ...state.items,
-        [section]: items,
-      },
-    })),
+      set((state) => ({
+        items: {
+          ...state.items,
+          [section]: items,
+        },
+      })),
 
   fetchItems: async (section, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}${query}`, {
+    const res = await fetch(`api/${section}${query}`, {
       // headers: getAuthHeaders(),
     });
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       throw new Error(
-        `Failed to fetch items (${res.status}): ${text || res.statusText}`
+          `Failed to fetch items (${res.status}): ${text || res.statusText}`
       );
     }
 
@@ -110,7 +124,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   fetchItemById: async (section, id, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}/${id}${query}`, {
+    const res = await apiCall(`api/${section}/${id}${query}`, {
       headers: getAuthHeaders(),
     });
 
@@ -146,7 +160,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   createItem: async (section, item, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}${query}`, {
+    const res = await apiCall(`api/${section}${query}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -165,7 +179,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   updateItem: async (section, item, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}/${item.id}${query}`, {
+    const res = await apiCall(`api/${section}/${item.id}${query}`, {
       method: "PUT",
       // headers: getAuthHeaders(),
       headers: {
@@ -185,7 +199,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   deleteItem: async (section, id, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}/${id}${query}`, {
+    const res = await apiCall(`api/${section}/${id}${query}`, {
       method: "DELETE",
       headers: getAuthHeaders(),
     });
@@ -207,7 +221,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`/api/${section}`, {
+    const res = await apiCall(`api/${section}`, {
       method: "POST",
       body: formData,
       // headers: getAuthHeaders(), // если нужна авторизация
@@ -225,7 +239,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   },
 
   removeFile: async (section: string) => {
-    const res = await fetch(`/api/${section}`, {
+    const res = await apiCall(`api/${section}`, {
       method: "DELETE",
       // headers: getAuthHeaders(), // если нужна авторизация
     });

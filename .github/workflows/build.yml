@@ -36,7 +36,7 @@ jobs:
         working-directory: client
         run: |
           npm install
-          VITE_API_URL=http://62.169.23.81:8080/ VITE_API_IMG=http://62.169.23.81:9000/ npm run build
+          npm run build
           cp -r dist ../build
 
       - name: Login to GitHub Container Registry

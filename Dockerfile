@@ -4,8 +4,9 @@ WORKDIR /app
 COPY client ./client
 WORKDIR /app/client
 
-ARG VITE_API_URL
-ARG VITE_API_IMG
+# КРИТИЧНО: Установить ENV перед npm run build
+ARG VITE_API_URL=http://62.169.23.81:8080/
+ARG VITE_API_IMG=http://62.169.23.81:9000/
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_API_IMG=$VITE_API_IMG
 
