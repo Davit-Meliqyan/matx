@@ -3,15 +3,15 @@ import { create } from "zustand";
 import { Item } from "../types/item.interface";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://62.169.23.81:8080/';
-const normalizeUrl = (url: string) => url.replace(/\/+$/, '');
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://62.169.23.81:8080/";
+const normalizeUrl = (url: string) => url.replace(/\/+$/, "");
 const API_BASE = normalizeUrl(API_BASE_URL);
 
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
-  const cleanEndpoint = endpoint.replace(/^\//, '');
+  const cleanEndpoint = endpoint.replace(/^\//, "");
   const fullUrl = `${API_BASE}/${cleanEndpoint}`;
 
-  console.log('API Call:', fullUrl); // Для отладки
+  console.log("API Call:", fullUrl);
 
   const response = await fetch(fullUrl, options);
   return response;
@@ -20,43 +20,23 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
 type SidebarState = {
   items: Record<string, Item[]>;
   setItems: (section: string, items: Item[]) => void;
-  fetchItems: (
-      section: string,
-      params?: Record<string, any>
-  ) => Promise<Item[]>;
-  fetchItemById: (
-      section: string,
-      id: string,
-      params?: Record<string, any>
-  ) => Promise<Item>;
-  createItem: (
-      section: string,
-      item: Omit<Item, "id">,
-      params?: Record<string, any>
-  ) => Promise<void>;
-  updateItem: (
-      section: string,
-      item: Item,
-      params?: Record<string, any>
-  ) => Promise<void>;
-  deleteItem: (
-      section: string,
-      id: string,
-      params?: Record<string, any>
-  ) => Promise<void>;
-
+  fetchItems: (section: string, params?: Record<string, any>) => Promise<Item[]>;
+  fetchItemById: (section: string, id: string, params?: Record<string, any>) => Promise<Item>;
+  createItem: (section: string, item: Omit<Item, "id">, params?: Record<string, any>) => Promise<void>;
+  updateItem: (section: string, item: Item, params?: Record<string, any>) => Promise<void>;
+  deleteItem: (section: string, id: string, params?: Record<string, any>) => Promise<void>;
   uploadFile: (section: string, file: File) => Promise<string>;
   removeFile: (section: string) => Promise<string>;
 };
 
-const getAuthHeaders = (): HeadersInit => {
-  const token = localStorage.getItem("token_matx");
-  if (!token) throw new Error("Token not found");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
+// const getAuthHeaders = (): HeadersInit => {
+//   const token = localStorage.getItem("token_sane_erp");
+//   if (!token) throw new Error("Token not found");
+//   return {
+//     "Content-Type": "application/json",
+//     Authorization: `Bearer ${token}`,
+//   };
+// };
 
 const buildQuery = (params?: Record<string, any>) => {
   if (!params) return "";
@@ -67,56 +47,43 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   items: {},
 
   setItems: (section, items) =>
-      set((state) => ({
-        items: {
-          ...state.items,
-          [section]: items,
-        },
-      })),
+    set((state) => ({
+      items: {
+        ...state.items,
+        [section]: items,
+      },
+    })),
 
   fetchItems: async (section, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`api/${section}${query}`, {
-      // headers: getAuthHeaders(),
-    });
+    const res = await apiCall(`api/${section}${query}`);
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       throw new Error(
-          `Failed to fetch items (${res.status}): ${text || res.statusText}`
+        `Failed to fetch items (${res.status}): ${text || res.statusText}`
       );
     }
 
-    // Если пустой ответ (например, 204 No Content) — вернём пустой массив
     const text = await res.text();
-    if (!text.trim()) {
-      return [];
-    }
+    if (!text.trim()) return [];
 
     let data;
     try {
       data = JSON.parse(text);
-    } catch (err) {
-      if (err) {
-        throw new Error(`Invalid JSON in response: ${text}`);
-      }
+    } catch {
+      throw new Error(`Invalid JSON in response: ${text}`);
     }
 
     const itemsArray: Item[] = Array.isArray(data) ? data : [data];
 
-    set((state) => {
-      const currentData = state.items[section];
-      if (JSON.stringify(currentData) === JSON.stringify(itemsArray)) {
-        return state;
-      }
-      return {
-        items: {
-          ...state.items,
-          [section]: itemsArray,
-        },
-      };
-    });
+    set((state) => ({
+      items: {
+        ...state.items,
+        [section]: itemsArray,
+      },
+    }));
 
     return itemsArray;
   },
@@ -124,9 +91,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   fetchItemById: async (section, id, params) => {
     const query = buildQuery(params);
 
-    const res = await apiCall(`api/${section}/${id}${query}`, {
-      headers: getAuthHeaders(),
-    });
+    const res = await apiCall(`api/${section}/${id}${query}`);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch item by id: ${res.statusText}`);
@@ -138,13 +103,8 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
       const items = state.items[section] ?? [];
       const idx = items.findIndex((i) => i.id === data.id);
 
-      let newItems: Item[];
-      if (idx === -1) {
-        newItems = [...items, data];
-      } else {
-        newItems = [...items];
-        newItems[idx] = data;
-      }
+      const newItems =
+        idx === -1 ? [...items, data] : items.map((i, index) => (index === idx ? data : i));
 
       return {
         items: {
@@ -164,7 +124,6 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // ...getAuthHeaders(), // если используешь авторизацию
       },
       body: JSON.stringify(item),
     });
@@ -181,9 +140,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
 
     const res = await apiCall(`api/${section}/${item.id}${query}`, {
       method: "PUT",
-      // headers: getAuthHeaders(),
       headers: {
-        // ...getAuthHeaders(),
         "Content-Type": "application/json",
       },
       body: JSON.stringify(item),
@@ -201,30 +158,29 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
 
     const res = await apiCall(`api/${section}/${id}${query}`, {
       method: "DELETE",
-      headers: getAuthHeaders(),
     });
 
-    const data = await res.json();
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`Failed to delete item: ${text || res.statusText}`);
+    }
+
+    const data = await res.json().catch(() => ({}));
 
     if (data.message) {
       toast.success(data.message);
     }
 
-    if (!res.ok) {
-      throw new Error(`Failed to delete item: ${res.statusText}`);
-    }
-
     await get().fetchItems(section, params);
   },
 
-  uploadFile: async (section: string, file: File): Promise<string> => {
+  uploadFile: async (section, file) => {
     const formData = new FormData();
     formData.append("file", file);
 
     const res = await apiCall(`api/${section}`, {
       method: "POST",
       body: formData,
-      // headers: getAuthHeaders(), // если нужна авторизация
     });
 
     const data = await res.text();
@@ -238,10 +194,9 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
     return data;
   },
 
-  removeFile: async (section: string) => {
+  removeFile: async (section) => {
     const res = await apiCall(`api/${section}`, {
       method: "DELETE",
-      // headers: getAuthHeaders(), // если нужна авторизация
     });
 
     if (!res.ok) {
