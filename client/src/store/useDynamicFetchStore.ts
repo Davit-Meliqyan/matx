@@ -10,9 +10,6 @@ const API_BASE = normalizeUrl(API_BASE_URL);
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const cleanEndpoint = endpoint.replace(/^\//, "");
   const fullUrl = `${API_BASE}/${cleanEndpoint}`;
-
-  console.log("API Call:", fullUrl);
-
   const response = await fetch(fullUrl, options);
   return response;
 };

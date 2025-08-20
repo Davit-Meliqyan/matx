@@ -9,9 +9,6 @@ const API_BASE = normalizeUrl(API_BASE_URL);
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const cleanEndpoint = endpoint.replace(/^\//, '');
   const fullUrl = `${API_BASE}/${cleanEndpoint}`;
-
-  console.log('License API Call:', fullUrl); // Для отладки
-
   const response = await fetch(fullUrl, options);
   return response;
 };
