@@ -9,7 +9,6 @@ interface LicensesTableProps {
 
 const headers = [
   "Icons",
-  "Downloads",
   "License Name",
   "Description",
   "Organization issued",

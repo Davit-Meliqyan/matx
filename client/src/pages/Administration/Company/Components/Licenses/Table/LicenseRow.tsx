@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { AiOutlineDownload } from "react-icons/ai";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { getFileIcon } from "../../../../../../utils/getFileIcon";
 import { LicenseCompany } from "../../../../../../types/dynamicTables";
@@ -43,23 +42,6 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
         </div>
       </td>
 
-      {/* Downloads */}
-      <td className="!border !border-solid !border-[#E3EBF1] px-4 py-3 whitespace-nowrap">
-        <div className="flex gap-1">
-          {license.fileURLs && license.fileURLs.length > 0 ? (
-            license.fileURLs.map((file) => (
-              <a key={file} href={`${API_BASE_URL_IMG}/files/${file}`} download>
-                <AiOutlineDownload
-                  title="Download"
-                  className="text-[24px] cursor-pointer transition-all duration-300 hover:text-green-700"
-                />
-              </a>
-            ))
-          ) : (
-            <span>--</span>
-          )}
-        </div>
-      </td>
 
       {/* License Name */}
       <td className="!border !border-solid !border-[#E3EBF1] px-4 py-3 whitespace-nowrap">
