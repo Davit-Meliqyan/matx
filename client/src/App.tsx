@@ -4,6 +4,7 @@ import "./App.css";
 import NotificationBlock from "./components/NotificationBlock/NotificationBlock";
 import useAutoLogout from "./hooks/useAutoLogout";
 import Loader from "./components/Loader/Loader";
+import NotFound from "./NotFound";
 
 // Pages — ленивые загрузки
 const Layout = lazy(() => import("./pages/Layout/Layout"));
@@ -56,9 +57,8 @@ function App() {
             <Route index element={<Welcome />} />
 
             <Route path="administration">
-              {/* Company (Department) */}
+              {/* Company (только без id) */}
               <Route path="company" element={<CompanyLayout />} />
-
 
               {/* Users */}
               <Route path="members" element={<AdministrationLayout />}>
@@ -73,6 +73,9 @@ function App() {
               </Route>
             </Route>
           </Route>
+
+          {/* 404 Not Found */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <NotificationBlock />
