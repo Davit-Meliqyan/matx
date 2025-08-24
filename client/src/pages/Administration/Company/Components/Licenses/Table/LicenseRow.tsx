@@ -86,7 +86,7 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
             license.active ? "bg-green-500" : "bg-red-500"
           }`}
         >
-          {license.active ? "Active" : "Inactive"}
+          {license.active ? "Active" : "Expired"}
         </span>
       </td>
 
