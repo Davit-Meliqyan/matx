@@ -36,71 +36,61 @@ const RolesForm: React.FC<RolesFormProps> = ({
 
   const handleSaveClick = () => formRef.current?.requestSubmit();
 
-  const handleCheckboxChangeInternal = (code: string, checked: boolean) => {
-    const item = PERMISSIONS.find((i) => i.code === code);
-    if (!item) return;
+const handleCheckboxChangeInternal = (code: string, checked: boolean) => {
+  const item = PERMISSIONS.find(i => i.code === code);
+  if (!item) return;
 
-    const groupItems = PERMISSIONS.filter((i) => i.group === item.group).map(
-      (i) => i.code
+  const groupItems = PERMISSIONS
+    .filter(i => i.group === item.group)
+    .sort((a, b) => a.level - b.level);
+
+  let newSelected = [...selectedPermissions];
+
+  if (checked) {
+    // Включение → добавляем все права до уровня выбранного
+    switch (item.level) {
+      case 1: // view
+        if (!newSelected.includes(item.code)) newSelected.push(item.code);
+        break;
+      case 2: // create
+        groupItems.filter(i => i.level <= 2).forEach(i => {
+          if (!newSelected.includes(i.code)) newSelected.push(i.code);
+        });
+        break;
+      case 3: // edit
+        groupItems.filter(i => i.level <= 3).forEach(i => {
+          if (!newSelected.includes(i.code)) newSelected.push(i.code);
+        });
+        break;
+      case 4: // delete
+        groupItems.forEach(i => {
+          if (!newSelected.includes(i.code)) newSelected.push(i.code);
+        });
+        break;
+    }
+  } else {
+    // Снятие → можно снять только если нет выбранных уровней выше
+    const maxSelectedLevel = Math.max(
+      0,
+      ...groupItems
+        .filter(i => newSelected.includes(i.code))
+        .map(i => i.level)
     );
 
-    let newSelected = [...selectedPermissions];
-
-    if (checked) {
-      switch (true) {
-        case code.startsWith("view"):
-          newSelected = Array.from(new Set([...newSelected, code]));
-          break;
-        case code.startsWith("edit"):
-          [
-            "view" + item.group,
-            "edit" + item.group,
-            "create" + item.group,
-          ].forEach((c) => {
-            if (!newSelected.includes(c)) newSelected.push(c);
-          });
-          break;
-        case code.startsWith("create"):
-          ["view" + item.group, "create" + item.group].forEach((c) => {
-            if (!newSelected.includes(c)) newSelected.push(c);
-          });
-          break;
-        case code.startsWith("delete"):
-          groupItems.forEach((c) => {
-            if (!newSelected.includes(c)) newSelected.push(c);
-          });
-          break;
-      }
-    } else {
-      // Снятие → снимаем только права, зависимые от уровня
-      switch (true) {
-        case code.startsWith("view"):
-          newSelected = newSelected.filter((c) => c !== code);
-          break;
-        case code.startsWith("edit"):
-          [
-            "view" + item.group,
-            "edit" + item.group,
-            "create" + item.group,
-          ].forEach((c) => {
-            newSelected = newSelected.filter((n) => n !== c);
-          });
-          break;
-        case code.startsWith("create"):
-          ["view" + item.group, "create" + item.group].forEach((c) => {
-            newSelected = newSelected.filter((n) => n !== c);
-          });
-          break;
-        case code.startsWith("delete"):
-          groupItems.forEach((c) => {
-            newSelected = newSelected.filter((n) => n !== c);
-          });
-          break;
-      }
+    if (item.level === maxSelectedLevel) {
+      // Снимаем все права с этим уровнем и выше
+      groupItems
+        .filter(i => i.level >= item.level)
+        .forEach(i => {
+          newSelected = newSelected.filter(c => c !== i.code);
+        });
     }
+    // Иначе ничего не снимаем (права выше блокируют)
+  }
 
-    onPermissionChange(newSelected);
-  };
+  onPermissionChange(newSelected);
+};
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
