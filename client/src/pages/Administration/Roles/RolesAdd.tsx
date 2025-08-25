@@ -1,23 +1,40 @@
 import { useState } from "react";
 import RolesForm from "./RolesForm";
+import { toast } from "react-toastify";
+import { PermissionItem } from "../../../types/permissions.interface";
+import { useDynamicFetchStore } from "../../../store/useDynamicFetchStore";
+
+type RolePayload = {
+  name: string;
+} & {
+  [K in PermissionItem["code"]]: boolean;
+};
 
 const RolesAdd = () => {
-
-  const [formData, setFormData] = useState<{ name: string }>({
-    name: "",
-  });
+  const [formData, setFormData] = useState<{ name: string }>({ name: "" });
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
-  const handleCheckboxChange = (code: string, checked: boolean) => {
-    setSelectedPermissions((prev) =>
-      checked ? [...prev, code] : prev.filter((itemId) => itemId !== code)
-    );
+  const createItem = useDynamicFetchStore((state) => state.createItem);
+
+  const handleCheckboxChange = (newSelected: string[]) => {
+    setSelectedPermissions(newSelected);
   };
 
+  const handleSubmit = async (payload: RolePayload) => {
+    try {
+      if (!payload.name) {
+        return toast.warn("Name field is empty");
+      }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+      await createItem("roles", payload);
 
-   alert(1111)
+      setFormData({ name: "" });
+      setSelectedPermissions([]);
+      toast.success("Role created");
+    } catch (error) {
+      toast.error(
+        "Error: " + (error instanceof Error ? error.message : "Unknown error")
+      );
+    }
   };
 
   return (

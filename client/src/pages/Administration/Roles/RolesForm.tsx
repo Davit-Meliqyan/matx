@@ -2,27 +2,24 @@ import { useRef } from "react";
 import DynamicCheckbox from "../../../components/DynamicComponents/DynamicCheckbox/DynamicCheckbox";
 import DynamicTopBar from "../../../components/DynamicComponents/DynamicTopBar/DynamicTopBar";
 import DynamicInput from "../../../components/DynamicComponents/DynamicInput/DynamicInput";
+import { PERMISSIONS, PermissionItem } from "../../../types/permissions.interface";
 
-type FormData = {
+type FormData = { name: string };
+
+type RolePayload = {
   name: string;
+} & {
+  [K in PermissionItem["code"]]: boolean;
 };
 
 type RolesFormProps = {
   mode: boolean;
   selectedPermissions: string[];
-  onPermissionChange: (id: string, checked: boolean) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onPermissionChange: (newSelected: string[]) => void;
+  onSubmit: (payload: RolePayload) => void; 
   formData: FormData;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 };
-
-const items = [
-  { id: "1", code: "user:view", name: "View Users" },
-  { id: "2", code: "user:edit", name: "Edit Users" },
-  { id: "3", code: "role:view", name: "View Roles" },
-  { id: "4", code: "role:edit", name: "Edit Roles" },
-];
-
 
 const RolesForm: React.FC<RolesFormProps> = ({
   mode,
@@ -32,43 +29,57 @@ const RolesForm: React.FC<RolesFormProps> = ({
   formData,
   setFormData,
 }) => {
-
   const formRef = useRef<HTMLFormElement>(null);
-  const handleSaveClick = () => {
-    formRef.current?.requestSubmit();
+  const handleSaveClick = () => formRef.current?.requestSubmit();
+
+  const handleCheckboxChangeInternal = (code: string, checked: boolean) => {
+    const item = PERMISSIONS.find((i) => i.code === code);
+    if (!item) return;
+
+    const groupItems = PERMISSIONS.filter((i) => i.group === item.group).map((i) => i.code);
+    let newSelected = [...selectedPermissions];
+
+    if (checked) {
+      groupItems.forEach((c) => {
+        if (!newSelected.includes(c)) newSelected.push(c);
+      });
+    } else {
+      newSelected = newSelected.filter((c) => !groupItems.includes(c));
+    }
+
+    onPermissionChange(newSelected);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const payload = PERMISSIONS.reduce((acc, item) => {
+      acc[item.code] = selectedPermissions.includes(item.code);
+      return acc;
+    }, { name: formData.name } as RolePayload);
+    onSubmit(payload);
   };
 
   return (
     <div className="w-full h-full flex flex-col gap-3">
       <DynamicTopBar mode={mode} onSaveClick={handleSaveClick} />
-      <div className="w-full h-full flex items-start justify-between flex-wrap gap-5 p-3 rounded-lg bg-[#FFFFFF]">
-        <form
-          ref={formRef}
-          onSubmit={onSubmit}
-          className="w-[280px] flex flex-col gap-6"
-        >
+      <div className="w-full h-full flex items-start justify-between flex-wrap gap-5 p-3 rounded-lg bg-white">
+        <form ref={formRef} onSubmit={handleSubmit} className="w-[280px] flex flex-col gap-6">
           <DynamicInput
             label="Name*"
             value={formData.name}
             type="text"
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
           />
-
           <div className="flex flex-col gap-4">
-            {items.map((item) =>
-              item.code ? (
-                <DynamicCheckbox
-                  key={item.id}
-                  data={item}
-                  checked={selectedPermissions.includes(item.code)}
-                  onChange={(checked) =>
-                    onPermissionChange(item.code!, checked)
-                  }
-                />
-              ) : null
-            )}
+            {PERMISSIONS.map((item) => (
+              <DynamicCheckbox
+                key={item.id}
+                data={item}
+                checked={selectedPermissions.includes(item.code)}
+                onChange={(checked) => handleCheckboxChangeInternal(item.code, checked)}
+              />
+            ))}
           </div>
         </form>
       </div>

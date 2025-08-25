@@ -1,18 +1,22 @@
 import { FiPlus } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
 import { useRouteSection } from "../../../hooks/useRouteSection";
-import React from "react";
-import { MdVerified } from "react-icons/md";
-import { GoUnverified } from "react-icons/go";
-
-const items = [
-  { id: 1, name: "Alice", isVerified: true },
-  { id: 2, name: "Bob", isVerified: false },
-  { id: 3, name: "Charlie", isVerified: true },
-];
+import React, { useEffect } from "react";
+// import { MdVerified } from "react-icons/md";
+// import { GoUnverified } from "react-icons/go";
+import { useDynamicFetchStore } from "../../../store/useDynamicFetchStore";
 
 const DynamicSidebar = () => {
   const { section, buildPath } = useRouteSection();
+  const rawItems = useDynamicFetchStore((state) => state.items[section]);
+  const items = Array.isArray(rawItems) ? rawItems : [];
+  const fetchItems = useDynamicFetchStore((state) => state.fetchItems);
+
+  useEffect(() => {
+    if (!section) return;
+
+    fetchItems(section);
+  }, [section, fetchItems]);
 
   return (
     <div className="w-full max-w-[400px] h-full sticky top-[0px] flex flex-col gap-5 p-3  rounded-lg bg-[#FFFFFF]">
@@ -46,13 +50,13 @@ const DynamicSidebar = () => {
               }
             >
               {item.name}
-              {section === "members" ? (
+              {/* {section === "members" ? (
                 item.isVerified === false ? (
                   <GoUnverified className="text-red-600 text-[24px]" />
                 ) : (
                   <MdVerified className="text-green-600 text-[24px]" />
                 )
-              ) : null}
+              ) : null} */}
             </NavLink>
           ))
         )}
