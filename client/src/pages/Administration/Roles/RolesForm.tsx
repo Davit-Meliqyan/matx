@@ -2,7 +2,10 @@ import { useRef } from "react";
 import DynamicCheckbox from "../../../components/DynamicComponents/DynamicCheckbox/DynamicCheckbox";
 import DynamicTopBar from "../../../components/DynamicComponents/DynamicTopBar/DynamicTopBar";
 import DynamicInput from "../../../components/DynamicComponents/DynamicInput/DynamicInput";
-import { PERMISSIONS, PermissionItem } from "../../../types/permissions.interface";
+import {
+  PERMISSIONS,
+  PermissionItem,
+} from "../../../types/permissions.interface";
 
 type FormData = { name: string };
 
@@ -16,7 +19,7 @@ type RolesFormProps = {
   mode: boolean;
   selectedPermissions: string[];
   onPermissionChange: (newSelected: string[]) => void;
-  onSubmit: (payload: RolePayload) => void; 
+  onSubmit: (payload: RolePayload) => void;
   formData: FormData;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 };
@@ -30,21 +33,70 @@ const RolesForm: React.FC<RolesFormProps> = ({
   setFormData,
 }) => {
   const formRef = useRef<HTMLFormElement>(null);
+
   const handleSaveClick = () => formRef.current?.requestSubmit();
 
   const handleCheckboxChangeInternal = (code: string, checked: boolean) => {
     const item = PERMISSIONS.find((i) => i.code === code);
     if (!item) return;
 
-    const groupItems = PERMISSIONS.filter((i) => i.group === item.group).map((i) => i.code);
+    const groupItems = PERMISSIONS.filter((i) => i.group === item.group).map(
+      (i) => i.code
+    );
+
     let newSelected = [...selectedPermissions];
 
     if (checked) {
-      groupItems.forEach((c) => {
-        if (!newSelected.includes(c)) newSelected.push(c);
-      });
+      switch (true) {
+        case code.startsWith("view"):
+          newSelected = Array.from(new Set([...newSelected, code]));
+          break;
+        case code.startsWith("edit"):
+          [
+            "view" + item.group,
+            "edit" + item.group,
+            "create" + item.group,
+          ].forEach((c) => {
+            if (!newSelected.includes(c)) newSelected.push(c);
+          });
+          break;
+        case code.startsWith("create"):
+          ["view" + item.group, "create" + item.group].forEach((c) => {
+            if (!newSelected.includes(c)) newSelected.push(c);
+          });
+          break;
+        case code.startsWith("delete"):
+          groupItems.forEach((c) => {
+            if (!newSelected.includes(c)) newSelected.push(c);
+          });
+          break;
+      }
     } else {
-      newSelected = newSelected.filter((c) => !groupItems.includes(c));
+      // Снятие → снимаем только права, зависимые от уровня
+      switch (true) {
+        case code.startsWith("view"):
+          newSelected = newSelected.filter((c) => c !== code);
+          break;
+        case code.startsWith("edit"):
+          [
+            "view" + item.group,
+            "edit" + item.group,
+            "create" + item.group,
+          ].forEach((c) => {
+            newSelected = newSelected.filter((n) => n !== c);
+          });
+          break;
+        case code.startsWith("create"):
+          ["view" + item.group, "create" + item.group].forEach((c) => {
+            newSelected = newSelected.filter((n) => n !== c);
+          });
+          break;
+        case code.startsWith("delete"):
+          groupItems.forEach((c) => {
+            newSelected = newSelected.filter((n) => n !== c);
+          });
+          break;
+      }
     }
 
     onPermissionChange(newSelected);
@@ -53,10 +105,14 @@ const RolesForm: React.FC<RolesFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = PERMISSIONS.reduce((acc, item) => {
-      acc[item.code] = selectedPermissions.includes(item.code);
-      return acc;
-    }, { name: formData.name } as RolePayload);
+    const payload = PERMISSIONS.reduce(
+      (acc, item) => {
+        acc[item.code] = selectedPermissions.includes(item.code);
+        return acc;
+      },
+      { name: formData.name } as RolePayload
+    );
+
     onSubmit(payload);
   };
 
@@ -64,12 +120,18 @@ const RolesForm: React.FC<RolesFormProps> = ({
     <div className="w-full h-full flex flex-col gap-3">
       <DynamicTopBar mode={mode} onSaveClick={handleSaveClick} />
       <div className="w-full h-full flex items-start justify-between flex-wrap gap-5 p-3 rounded-lg bg-white">
-        <form ref={formRef} onSubmit={handleSubmit} className="w-[280px] flex flex-col gap-6">
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="w-[280px] flex flex-col gap-6"
+        >
           <DynamicInput
             label="Name*"
             value={formData.name}
             type="text"
-            onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
           />
           <div className="flex flex-col gap-4">
             {PERMISSIONS.map((item) => (
@@ -77,7 +139,9 @@ const RolesForm: React.FC<RolesFormProps> = ({
                 key={item.id}
                 data={item}
                 checked={selectedPermissions.includes(item.code)}
-                onChange={(checked) => handleCheckboxChangeInternal(item.code, checked)}
+                onChange={(checked) =>
+                  handleCheckboxChangeInternal(item.code, checked)
+                }
               />
             ))}
           </div>
