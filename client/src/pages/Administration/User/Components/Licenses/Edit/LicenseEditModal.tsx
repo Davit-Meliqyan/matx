@@ -11,6 +11,7 @@ import { LicenseUser } from "../../../../../../types/dynamicTables";
 
 interface LicensesEditModalProps {
   licenseId: string;
+  userId: string;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -23,6 +24,7 @@ export interface LicenseFormValues
 
 const LicensesEditModal: React.FC<LicensesEditModalProps> = ({
   licenseId,
+  userId,
   isOpen,
   onClose,
 }) => {
@@ -40,7 +42,7 @@ const LicensesEditModal: React.FC<LicensesEditModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setFetching(true);
-      fetchItemById("company", licenseId)
+      fetchItemById(`members/${userId}`, licenseId)
         .then((data) => {
           setLicense(data);
           form.setFieldsValue({
@@ -61,12 +63,12 @@ const LicensesEditModal: React.FC<LicensesEditModalProps> = ({
       setUploadList([]);
       form.resetFields();
     }
-  }, [isOpen, licenseId, fetchItemById, form]);
+  }, [isOpen, licenseId, userId, fetchItemById, form]);
 
   const handleRemoveFile = async (fileName: string) => {
     if (!license) return;
     try {
-      await removeFile("company", license.id, fileName);
+      await removeFile(`members/${userId}`, license.id, fileName);
       setLicense((prev) =>
         prev
           ? {
@@ -96,11 +98,11 @@ const LicensesEditModal: React.FC<LicensesEditModalProps> = ({
         fileURLs: license.fileURLs ?? [],
       };
 
-      await updateItem("company", payload);
+      await updateItem(`members/${userId}`, payload);
 
       if (uploadList.length) {
         await uploadFile(
-          "company",
+          `members/${userId}`,
           license.id,
           uploadList.map((f) => f.originFileObj!)
         );

@@ -30,12 +30,14 @@ const UserForm = ({
   onSubmit,
   onReset,
   mode,
-  onDelete
+  onDelete,
 }: UserFormProps) => {
   return (
     <div className="flex flex-col gap-5 w-full">
-      <h3 className="text-2xl font-semibold">Member</h3>
-
+      <h3 className="text-2xl font-semibold">
+        You view: (
+        {[formData.name, formData.sureName].filter(Boolean).join(" ")})
+      </h3>
       <form
         className="max-w-[620px] flex flex-col gap-5"
         onSubmit={onSubmit}

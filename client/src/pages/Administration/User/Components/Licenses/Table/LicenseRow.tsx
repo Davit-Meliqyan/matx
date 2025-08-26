@@ -4,7 +4,7 @@ import { getFileIcon } from "../../../../../../utils/getFileIcon";
 import { LicenseUser } from "../../../../../../types/dynamicTables";
 import dayjs from "dayjs";
 const API_BASE_URL_IMG =
-    import.meta.env.VITE_API_IMG || "http://62.169.23.81:9000";
+  import.meta.env.VITE_API_IMG || "http://62.169.23.81:9000";
 
 interface LicenseRowProps {
   license: LicenseUser;
@@ -17,8 +17,6 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
   onDelete,
   onEdit,
 }) => {
-  
-
   return (
     <tr>
       {/* Icons */}
@@ -41,7 +39,6 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
           )}
         </div>
       </td>
-
 
       {/* License Name */}
       <td className="!border !border-solid !border-[#E3EBF1] px-4 py-3 whitespace-nowrap">
@@ -77,6 +74,16 @@ const LicenseRow: React.FC<LicenseRowProps> = ({
               .map((word) => word[0].toUpperCase() + word.slice(1))
               .join(" ")
           : "--"}
+      </td>
+
+      {/* Training Duration Value */}
+      <td className="!border !border-solid !border-[#E3EBF1] px-4 py-3 whitespace-nowrap">
+        {license.trainingDurationValue}
+      </td>
+
+      {/* Training Duration Unit */}
+      <td className="!border !border-solid !border-[#E3EBF1] px-4 py-3 whitespace-nowrap">
+        {license.trainingDurationUnit}
       </td>
 
       {/* Status */}

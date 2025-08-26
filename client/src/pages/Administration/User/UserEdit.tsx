@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import UserForm from "./UserForm";
 import DynamicTabs from "../../../components/DynamicComponents/DynamicTabs/DynamicTabs";
 import { useTabsStore } from "../../../store/tabsStore";
-import UserLicenses from "./UserLicenses";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDynamicFetchStore } from "../../../store/useDynamicFetchStore";
 import { UserFormData } from "../../../types/user.interface";
 import { toast } from "react-toastify";
 import { useRouteSection } from "../../../hooks/useRouteSection";
+import UserLicenses from "./Components/Licenses/UserLicenses";
 
 const tabs = [
   { id: "info", label: "Member Info" },
@@ -137,7 +137,7 @@ const UserEdit = () => {
           onDelete={() => handleDelete(id!)}
         />
       ) : (
-        <UserLicenses />
+        <UserLicenses id={id ?? ""} name={formData.name} surname={formData.sureName}/>
       )}
     </div>
   );

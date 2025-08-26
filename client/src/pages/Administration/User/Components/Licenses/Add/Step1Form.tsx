@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, DatePicker, Select, Button } from "antd";
+import { Form, Input, DatePicker, Select, Button, InputNumber } from "antd";
 import { Step1FormValues, Step1Data } from "./types";
 
 interface Step1FormProps {
@@ -15,7 +15,9 @@ const Step1Form: React.FC<Step1FormProps> = ({ initialValues, onFinish }) => {
         initialValues
           ? {
               ...initialValues,
-              date: initialValues.date ? new Date(initialValues.date) : undefined,
+              date: initialValues.date
+                ? new Date(initialValues.date)
+                : undefined,
               dateOfExpiry: initialValues.dateOfExpiry
                 ? new Date(initialValues.dateOfExpiry)
                 : undefined,
@@ -53,7 +55,6 @@ const Step1Form: React.FC<Step1FormProps> = ({ initialValues, onFinish }) => {
         <Form.Item
           label="Date"
           name="date"
-          rules={[{ required: true, message: "Select date" }]}
         >
           <DatePicker className="w-full" />
         </Form.Item>
@@ -61,9 +62,28 @@ const Step1Form: React.FC<Step1FormProps> = ({ initialValues, onFinish }) => {
         <Form.Item
           label="Date of Expiry"
           name="dateOfExpiry"
-          rules={[{ required: true, message: "Select expiry date" }]}
         >
           <DatePicker className="w-full" />
+        </Form.Item>
+
+        <Form.Item
+          label="Training Duration Value"
+          name="trainingDurationValue"
+          rules={[{ required: true, message: "Enter organization" }]}
+        >
+          <InputNumber min={0} style={{ width: "100%" }} />
+        </Form.Item>
+
+        <Form.Item
+          label="Training Duration Unit"
+          name="trainingDurationUnit"
+          rules={[{ required: true, message: "Select reminder" }]}
+        >
+          <Select>
+            <Select.Option value="HOURS">Hours</Select.Option>
+            <Select.Option value="DAYS">Days</Select.Option>
+            <Select.Option value="MONTHS">Months</Select.Option>
+          </Select>
         </Form.Item>
 
         <Form.Item

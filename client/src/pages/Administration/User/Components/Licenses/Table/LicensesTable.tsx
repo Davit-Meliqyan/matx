@@ -15,6 +15,8 @@ const headers = [
   "Date",
   "Date of Expiry",
   "Remind about Expiry date",
+  "Training Duration Value",
+  "Training Duration Unit",
   "Status",
   "Action",
 ];

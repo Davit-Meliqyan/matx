@@ -5,7 +5,13 @@ import LicensesTable from "./Table/LicensesTable";
 import LicensesAddModal from "./Add/LicensesAddModal";
 import LicensesEditModal from "./Edit/LicenseEditModal";
 
-const UserLicenses = () => {
+type UserLicensesProps = {
+  id: string;
+  name: string;
+  surname: string;
+};
+
+const UserLicenses = ({ id, name, surname }: UserLicensesProps) => {
   const items = useLicenseStore((state) => state.items);
   const fetchItems = useLicenseStore((state) => state.fetchItems);
   const deleteItem = useLicenseStore((state) => state.deleteItem);
@@ -17,7 +23,7 @@ const UserLicenses = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetchItems("members");
+        await fetchItems(`members/${id}`);
       } catch (err) {
         console.error(err);
       } finally {
@@ -26,14 +32,14 @@ const UserLicenses = () => {
     };
 
     fetchData();
-  }, [fetchItems]);
+  }, [id, fetchItems]);
 
   const handleEdit = (id: string) => {
     setEditLicenseId(id);
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (id: string, name: string) => {
+  const handleDelete = (licenseId: string, name: string) => {
     Modal.confirm({
       title: `Are you sure you want to delete this ${name}?`,
       content:
@@ -42,7 +48,7 @@ const UserLicenses = () => {
       okType: "danger",
       cancelText: "No",
       async onOk() {
-        return deleteItem("members", id).then(() => {
+        return deleteItem(`members/${id}`, licenseId).then(() => {
           message.success("Deleted successfully");
         });
       },
@@ -52,17 +58,19 @@ const UserLicenses = () => {
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="flex justify-between items-start gap-5 h-[50px]">
-        <h3 className="text-2xl font-semibold">Licenses</h3>
-        <LicensesAddModal />
+        <h3 className="text-2xl font-semibold">
+          You view licenses: ({[name, surname].filter(Boolean).join(" ")})
+        </h3>
+        <LicensesAddModal userId={id} />
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center h-[calc(100vh-280px)]">
           <Spin size="large" />
         </div>
-      ) : items["members"]?.length > 0 ? (
+      ) : items[`members/${id}`]?.length > 0 ? (
         <LicensesTable
-          licenses={items["members"]}
+          licenses={items[`members/${id}`]}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -73,6 +81,7 @@ const UserLicenses = () => {
       {editLicenseId && (
         <LicensesEditModal
           licenseId={editLicenseId}
+          userId={id}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
         />

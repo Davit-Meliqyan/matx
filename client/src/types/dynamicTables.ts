@@ -22,6 +22,8 @@ export type LicenseUser = {
   date: string | null;
   dateOfExpiry: string | null;
   expiryReminder?: string;
+  trainingDurationValue?: number;
+  trainingDurationUnit?: string;
   active: boolean;
   fileURLs: string[];
 };

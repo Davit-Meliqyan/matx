@@ -6,9 +6,13 @@ import Step1Form from "./Step1Form";
 import Step2Upload from "./Step2Upload";
 import { useLicenseStore } from "../../../../../../store/useLicensesFetchStore";
 
+type UserLicensesProps = {
+  userId: string;
+};
+
 const { Step } = Steps;
 
-const LicensesAddModal: React.FC = () => {
+const LicensesAddModal: React.FC<UserLicensesProps> = ({ userId }) => {
   const createItem = useLicenseStore((state) => state.createItem);
   const uploadFile = useLicenseStore((state) => state.uploadFile);
 
@@ -32,7 +36,7 @@ const LicensesAddModal: React.FC = () => {
       dateOfExpiry: values.dateOfExpiry?.toISOString() ?? "",
     };
 
-    const created = await createItem("members", formatted);
+    const created = await createItem(`members/${userId}`, formatted);
     setCreateId(created.id);
 
     setFormStep1(formatted);
@@ -44,7 +48,7 @@ const LicensesAddModal: React.FC = () => {
     try {
       if (values.fileURLs?.length) {
         await uploadFile(
-          "members",
+          `members/${userId}`,
           createId,
           values.fileURLs.map((f) => f.originFileObj!)
         );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, DatePicker, Select } from "antd";
+import { Form, Input, DatePicker, Select, InputNumber } from "antd";
 
 const LicenseFormFields: React.FC = () => {
   return (
@@ -7,6 +7,7 @@ const LicenseFormFields: React.FC = () => {
       <Form.Item label="Name" name="name" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
+
       <Form.Item
         label="Description"
         name="description"
@@ -14,6 +15,7 @@ const LicenseFormFields: React.FC = () => {
       >
         <Input />
       </Form.Item>
+
       <Form.Item
         label="Organization issued"
         name="organizationIssued"
@@ -21,16 +23,38 @@ const LicenseFormFields: React.FC = () => {
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Date" name="date" rules={[{ required: true }]}>
+
+      <Form.Item label="Date" name="date" >
         <DatePicker className="w-full" />
       </Form.Item>
+
       <Form.Item
         label="Date of Expiry"
         name="dateOfExpiry"
-        rules={[{ required: true }]}
       >
         <DatePicker className="w-full" />
       </Form.Item>
+
+      <Form.Item
+        label="Training Duration Value"
+        name="trainingDurationValue"
+        rules={[{ required: true, message: "Enter organization" }]}
+      >
+        <InputNumber min={0} style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item
+        label="Training Duration Unit"
+        name="trainingDurationUnit"
+        rules={[{ required: true, message: "Select reminder" }]}
+      >
+        <Select>
+          <Select.Option value="HOURS">Hours</Select.Option>
+          <Select.Option value="DAYS">Days</Select.Option>
+          <Select.Option value="MONTHS">Months</Select.Option>
+        </Select>
+      </Form.Item>
+      
       <Form.Item
         label="Remind about Expiry date"
         name="expiryReminder"
