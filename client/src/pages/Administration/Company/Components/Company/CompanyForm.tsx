@@ -71,7 +71,7 @@ const CompanyForm = () => {
     }
 
     if (mode) {
-      await updateItem("company", { id, ...formData });
+      await updateItem("company", id, {...formData });
       toast.success("Company updated");
     } else {
       await createItem("company", formData);

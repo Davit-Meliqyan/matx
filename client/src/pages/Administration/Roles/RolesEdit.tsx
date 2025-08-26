@@ -67,7 +67,7 @@ const RolesEdit = () => {
         return toast.warn("Name field is empty");
       }
 
-      await updateItem("roles", { id, ...payload });
+      await updateItem("roles", id, {...payload });
 
       toast.success("Role updated successfully");
     } catch (error) {

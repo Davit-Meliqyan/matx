@@ -34,7 +34,8 @@ type SidebarState = {
   ) => Promise<void>;
   updateItem: (
     section: string,
-    item: Item,
+    id: string,
+    item: Partial<Item>, // или Omit<Item, "id">
     params?: Record<string, any>
   ) => Promise<void>;
   deleteItem: (
@@ -154,13 +155,12 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
     await get().fetchItems(section, params);
   },
 
-  updateItem: async (section, item, params) => {
-   const query = buildQuery(params);
+  updateItem: async (section, id, item, params) => {
+    const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}/${item.id}${query}`, {
+    const res = await apiCall(`api/${section}/${id}${query}`, {
       method: "PUT",
       headers: {
-        // ...getAuthHeaders(),
         "Content-Type": "application/json",
       },
       body: JSON.stringify(item),
