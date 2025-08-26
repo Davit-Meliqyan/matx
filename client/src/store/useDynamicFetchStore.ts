@@ -176,7 +176,7 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
   deleteItem: async (section, id, params) => {
     const query = buildQuery(params);
 
-    const res = await fetch(`/api/${section}/${id}${query}`, {
+    const res = await apiCall(`api/${section}/${id}${query}`, {
       method: "DELETE",
       // headers: getAuthHeaders(),
     });
@@ -185,11 +185,14 @@ export const useDynamicFetchStore = create<SidebarState>((set, get) => ({
       if (res.status === 204) {
         toast.success("Item deleted successfully");
       } else {
-        const data = await res.json();
-        if (data.message) toast.success(data.message);
+        const data = await res.json().catch(() => null);
+        if (data?.message) toast.success(data.message);
       }
     } else {
-      throw new Error(`Failed to delete item: ${res.statusText}`);
+      const text = await res.text().catch(() => "");
+      throw new Error(
+        `Failed to delete item (${res.status}): ${text || res.statusText}`
+      );
     }
 
     await get().fetchItems(section, params);
