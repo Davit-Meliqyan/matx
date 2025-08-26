@@ -12,9 +12,9 @@ export interface user {
 
 export interface UserFormData {
   name: string;
-  surname: string;
-  positionName: string;
+  sureName: string;
+  position: string;
   email: string;
-  phoneNumber: string;
-  roleIds: string[];
+  phone: string;
+  roles: string[];
 }
