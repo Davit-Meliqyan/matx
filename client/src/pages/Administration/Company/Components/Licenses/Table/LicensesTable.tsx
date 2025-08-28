@@ -21,7 +21,7 @@ const headers = [
 
 const LicensesTable: React.FC<LicensesTableProps> = ({ licenses, onEdit, onDelete }) => {
   return (
-    <div className="overflow-auto max-h-[calc(100vh-280px)] max-w-full">
+    <div className="overflow-auto custom-global-scroll max-h-[calc(100vh-280px)] max-w-full">
       <table className="w-full border-collapse !border !border-solid !border-[#E3EBF1] dark:!border-[#333] text-sm text-gray-700 dark:text-gray-300">
         <thead>
           <tr className="bg-[#F9FAFB] dark:bg-[#141e35] sticky top-[-1px]">
