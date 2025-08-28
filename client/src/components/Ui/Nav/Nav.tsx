@@ -146,10 +146,12 @@ const Nav = () => {
           <div key={item.id} className="w-full flex flex-col gap-2">
             <button
               onClick={() => handleToggle(item.id)}
-              className={`w-full flex items-start gap-2 p-2 text-left rounded transition-all
-              text-gray-700 hover:bg-gray-100
-              dark:text-white dark:hover:bg-gray-700
-              ${openItem === item.id ? "bg-gray-100 dark:bg-gray-700" : ""}`}
+              className={`
+    w-full flex items-start gap-2 p-2 text-left rounded 
+    text-gray-700 dark:text-white
+    ${openItem === item.id ? "bg-gray-100 dark:bg-gray-700" : ""}
+    hover:transition-colors hover:duration-300 hover:bg-gray-100 dark:hover:bg-gray-700
+  `}
             >
               {item.title}
               <i className="ml-auto">
@@ -170,12 +172,17 @@ const Nav = () => {
                   <Link
                     key={child.to}
                     to={child.to}
-                    className={`p-2 rounded transition-all 
-                    ${
-                      pathname.startsWith(child.to)
-                        ? "bg-gray-200 text-gray-900 font-medium dark:bg-gray-700 dark:text-white"
-                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700"
-                    }`}
+                    className={`
+    p-2 rounded
+    ${
+      pathname.startsWith(child.to)
+        ? "bg-gray-200 text-gray-900 font-medium dark:bg-gray-700 dark:text-white"
+        : "text-gray-600 dark:text-gray-300"
+    }
+    hover:transition-colors hover:duration-300
+    hover:bg-gray-100 hover:text-gray-900
+    dark:hover:bg-gray-700 dark:hover:text-white
+  `}
                   >
                     {child.title}
                   </Link>
@@ -187,12 +194,17 @@ const Nav = () => {
           <Link
             key={item.id}
             to={(item as LeafItem).to}
-            className={`flex items-center gap-2 p-2 rounded transition-all 
-            ${
-              pathname === (item as LeafItem).to
-                ? "bg-gray-200 text-gray-900 font-medium dark:bg-gray-700 dark:text-white"
-                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700"
-            }`}
+            className={`
+    flex items-center gap-2 p-2 rounded
+    ${
+      pathname === (item as LeafItem).to
+        ? "bg-gray-200 text-gray-900 font-medium dark:bg-gray-700 dark:text-white"
+        : "text-gray-700 dark:text-white"
+    }
+    hover:transition-colors hover:duration-300
+    hover:bg-gray-100 hover:text-gray-900
+    dark:hover:bg-gray-700
+  `}
           >
             {item.title}
           </Link>

@@ -115,7 +115,7 @@ const CompanyForm = () => {
         <CompanyButtons />
 
         {loading && (
-          <div className="bg-white/70 flex justify-center items-center h-full absolute inset-0 z-20">
+          <div className="bg-white/70 dark:bg-[#111827]/70 flex justify-center items-center h-full absolute inset-0 z-20">
             <Spin size="large" />
           </div>
         )}
