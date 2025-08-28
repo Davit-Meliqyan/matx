@@ -78,7 +78,7 @@ const UserAdd = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-start gap-5 p-5 rounded-2xl bg-[#FFFFFF]">
+    <div className="w-full h-full flex flex-col items-start gap-5 p-5 rounded-2xl bg-[#FFFFFF] dark:bg-[#111827]">
       <UserForm
         formData={formData}
         roles={roles}

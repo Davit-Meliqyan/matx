@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import Select from "react-select";
 
@@ -9,7 +10,6 @@ interface OptionsProps {
 interface CustomerSelectBooleanProps {
   label?: string;
   value: string | string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (...args: any[]) => void;
   options: OptionsProps[];
   isMulti?: boolean;
@@ -29,7 +29,7 @@ const DynamicSelect: React.FC<CustomerSelectBooleanProps> = ({
   return (
     <label className="w-full sm:max-w-[300px] flex flex-col gap-1">
       {label && (
-        <span className="text-[#474B57] dark:text-[#FFFFFF] text-sm font-medium mb-1">
+        <span className="text-gray-700 dark:text-gray-200 text-sm font-medium mb-1">
           {label}
         </span>
       )}
@@ -42,23 +42,44 @@ const DynamicSelect: React.FC<CustomerSelectBooleanProps> = ({
             const selected = Array.isArray(selectedOption)
               ? selectedOption.map((opt) => opt.value)
               : [];
-            onChange(selected); // string[]
+            onChange(selected);
           } else {
             if (selectedOption) {
-              onChange((selectedOption as OptionsProps).value); // string
+              onChange((selectedOption as OptionsProps).value);
             }
           }
         }}
         styles={{
-          control: (base) => ({
+          control: (base, state) => ({
             ...base,
-            backgroundColor: "white",
-            borderColor: "#E6E7E8",
-            borderRadius: "6px",
-            minHeight: "38px",
+            backgroundColor: "inherit",
+            borderColor: state.isFocused ? "#1A5370" : "#D1D5DB",
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderRadius: 6,
+            minHeight: 38,
+            color: "inherit",
+            boxShadow: state.isFocused ? "0 0 0 1px #1A5370" : "none",
+          }),
+          menu: (base) => ({
+            ...base,
+            backgroundColor: "inherit",
+            borderStyle: "solid",
+            borderColor: "#D1D5DB",
+            borderWidth: 1,
+          }),
+          option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isFocused
+              ? "rgba(26,83,112,0.1)"
+              : state.isSelected
+              ? "#1A5370"
+              : "inherit",
+            color: state.isSelected ? "#ffffff" : "inherit",
           }),
         }}
         classNamePrefix="react-select"
+        className="!border !border-solid !border-gray-300 dark:!border-gray-600 bg-white dark:bg-[#111827] text-gray-900 dark:text-white rounded"
         menuPlacement="auto"
         menuPosition="absolute"
       />

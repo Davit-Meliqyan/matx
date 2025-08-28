@@ -24,13 +24,13 @@ const headers = [
 const LicensesTable: React.FC<LicensesTableProps> = ({ licenses, onEdit, onDelete }) => {
   return (
     <div className="overflow-auto max-h-[calc(100vh-280px)] max-w-full">
-      <table className="w-full border-collapse !border !border-[#E3EBF1] text-sm text-gray-700">
+      <table className="w-full border-collapse !border !border-solid !border-[#E3EBF1] dark:!border-[#333] text-sm text-gray-700 dark:text-gray-300">
         <thead>
-          <tr className="bg-[#F9FAFB] sticky top-[-1px]">
+          <tr className="bg-[#F9FAFB] dark:bg-[#141e35] sticky top-[-1px]">
             {headers.map((header) => (
               <th
                 key={header}
-                className="!border !border-solid !border-[#E3EBF1] px-4 py-3 text-left font-medium text-gray-900 whitespace-nowrap"
+                className="!border !border-solid !border-[#E3EBF1] dark:!border-[#444] px-4 py-3 text-left font-medium text-gray-900 dark:text-gray-200 whitespace-nowrap"
               >
                 {header}
               </th>

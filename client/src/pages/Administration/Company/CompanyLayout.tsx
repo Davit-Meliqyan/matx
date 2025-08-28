@@ -13,7 +13,7 @@ const CompanyLayout = () => {
 
   return (
     <main className="flex flex-col items-start gap-3 p-4">
-      <div className="w-full h-full flex flex-col items-start gap-5 p-5 rounded-2xl bg-[#FFFFFF]">
+      <div className="w-full h-full flex flex-col items-start gap-5 p-5 rounded-2xl bg-white dark:bg-[#111827]">
         <DynamicTabs tabs={tabs} />
         {activeTab === "info" ? (
           <CompanyForm />

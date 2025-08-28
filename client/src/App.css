@@ -80,6 +80,10 @@ body {
   background-color: #ecf0f2;
 }
 
+body.dark {
+  background-color: #1e1e2a;
+}
+
 body::-webkit-scrollbar {
   display: none;
 }

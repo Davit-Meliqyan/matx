@@ -8,28 +8,15 @@ type ParentItem = {
   id: string;
   title: string;
   children: Child[];
-  // all?:boolean
 };
 
 type LeafItem = {
   id: string;
   title: string;
   to: string;
-  // all?:boolean
 };
 
 type NavItem = ParentItem | LeafItem;
-
-// const navSuccess = [
-//   {
-//     title: "Dashboard",
-//     access: true,
-//   },
-//   {
-//     title: "Company",
-//     access: true,
-//   },
-// ];
 
 const navItems: NavItem[] = [
   {
@@ -95,7 +82,7 @@ const navItems: NavItem[] = [
   },
   {
     id: "radiotracers",
-    title: "Radioisotopes and radiopharmaceuticals", //Radiotracers
+    title: "Radioisotopes and radiopharmaceuticals",
     children: [
       { to: "/radiotracers/radioisotopes", title: "Radioisotopes" },
       {
@@ -159,9 +146,10 @@ const Nav = () => {
           <div key={item.id} className="w-full flex flex-col gap-2">
             <button
               onClick={() => handleToggle(item.id)}
-              className={`w-full flex items-start gap-2 p-2 text-left rounded text-white hover:bg-gray-700 transition-all ${
-                openItem === item.id ? "bg-gray-700" : ""
-              }`}
+              className={`w-full flex items-start gap-2 p-2 text-left rounded transition-all
+              text-gray-700 hover:bg-gray-100
+              dark:text-white dark:hover:bg-gray-700
+              ${openItem === item.id ? "bg-gray-100 dark:bg-gray-700" : ""}`}
             >
               {item.title}
               <i className="ml-auto">
@@ -177,15 +165,16 @@ const Nav = () => {
                 openItem === item.id ? "max-h-[500px]" : "max-h-0"
               }`}
             >
-              <div className="pl-4 border-l border-gray-700 flex flex-col gap-1">
+              <div className="pl-4 border-l border-gray-200 dark:border-gray-700 flex flex-col gap-1">
                 {item.children.map((child) => (
                   <Link
                     key={child.to}
                     to={child.to}
-                    className={`p-2 rounded transition-all ${
+                    className={`p-2 rounded transition-all 
+                    ${
                       pathname.startsWith(child.to)
-                        ? "bg-gray-200 text-black font-medium"
-                        : "text-gray-300 hover:text-white hover:bg-gray-700"
+                        ? "bg-gray-200 text-gray-900 font-medium dark:bg-gray-700 dark:text-white"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700"
                     }`}
                   >
                     {child.title}
@@ -198,10 +187,11 @@ const Nav = () => {
           <Link
             key={item.id}
             to={(item as LeafItem).to}
-            className={`flex items-center gap-2 p-2 rounded transition-all ${
+            className={`flex items-center gap-2 p-2 rounded transition-all 
+            ${
               pathname === (item as LeafItem).to
-                ? "bg-gray-200 text-black font-medium"
-                : "text-white hover:bg-gray-700"
+                ? "bg-gray-200 text-gray-900 font-medium dark:bg-gray-700 dark:text-white"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700"
             }`}
           >
             {item.title}

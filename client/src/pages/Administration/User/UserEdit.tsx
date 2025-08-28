@@ -124,7 +124,7 @@ const UserEdit = () => {
   };
 
   return (
-    <div className="w-[calc(100%-416px)] h-full flex flex-col items-start gap-5 p-5 rounded-2xl bg-[#FFFFFF]">
+    <div className="w-[calc(100%-320px)] h-full flex flex-col items-start gap-5 p-5 rounded-2xl bg-[#FFFFFF] dark:bg-[#111827]">
       <DynamicTabs tabs={tabs} />
       {activeTab === "info" ? (
         <UserForm
@@ -137,7 +137,7 @@ const UserEdit = () => {
           onDelete={() => handleDelete(id!)}
         />
       ) : (
-        <UserLicenses id={id ?? ""} name={formData.name} surname={formData.sureName}/>
+        <UserLicenses id={id ?? ""}/>
       )}
     </div>
   );

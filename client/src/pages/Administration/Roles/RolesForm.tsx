@@ -45,7 +45,7 @@ const RolesForm: React.FC<RolesFormProps> = ({
   return (
     <div className="w-full h-full flex flex-col gap-3">
       <DynamicTopBar mode={mode} onSaveClick={handleSaveClick} />
-      <div className="w-full h-full flex items-start justify-between flex-wrap gap-5 p-3 rounded-lg bg-white">
+      <div className="w-full h-full flex items-start justify-between flex-wrap gap-5 p-3 rounded-lg bg-[#FFFFFF] dark:bg-[#111827]">
         <form ref={formRef} onSubmit={handleSubmit} className="w-[280px] flex flex-col gap-6">
           <RoleNameInput formData={formData} setFormData={setFormData} />
           <PermissionsList

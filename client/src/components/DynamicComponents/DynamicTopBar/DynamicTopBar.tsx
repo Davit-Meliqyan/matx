@@ -29,43 +29,40 @@ const DynamicTopBar: React.FC<DepartmentProps> = ({ mode, onSaveClick }) => {
     }
   };
 
+  const buttonBase =
+    "p-2 rounded-md transition-all duration-300 flex items-center justify-center";
+
   return (
-    <div className="w-full p-3 flex items-center justify-between gap-2 rounded-lg bg-[#FFFFFF]">
-      <h2 className="text-lg font-semibold">
+    <div className="w-full p-3 flex items-center justify-between gap-2 rounded-lg bg-white dark:bg-[#111827]">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
         {mode ? `Add ${section}` : `Edit ${section}`}
       </h2>
 
       <div className="flex items-center gap-2">
         <button
           onClick={onSaveClick}
-          className="p-2 rounded-md bg-gray-700 text-white transition-all duration-300 hover:bg-green-700"
+          className={`${buttonBase} bg-gray-700 hover:bg-green-700 text-white dark:bg-[#25344f] dark:hover:bg-[#1A5370]`}
           title={mode ? "save" : "update"}
         >
-          {mode ? (
-            <FiSave className="text-[24px]" />
-          ) : (
-            <MdPublishedWithChanges className="text-[24px]" />
-          )}
+          {mode ? <FiSave className="text-[24px]" /> : <MdPublishedWithChanges className="text-[24px]" />}
         </button>
 
         {!mode && (
           <button
             onClick={() => {
-              if (id) {
-                handleDelete(id);
-              } else {
-                toast.error("ID not set");
-              }
+              if (id) handleDelete(id);
+              else toast.error("ID not set");
             }}
-            className="p-2 rounded-md bg-gray-700 text-[#FFFFFF] transition-all duration-300 hover:bg-red-500"
+            className={`${buttonBase} bg-gray-700 hover:bg-red-500 text-white dark:bg-[#25344f] dark:hover:bg-red-600`}
             title="Remove"
           >
             <FaRegTrashAlt className="text-[24px]" />
           </button>
         )}
+
         <Link
           to={buildPath("")}
-          className="p-2 rounded-md bg-gray-700 text-[#FFFFFF] transition-all duration-300 hover:bg-blue-800"
+          className={`${buttonBase} bg-gray-700 hover:bg-blue-800 text-white dark:bg-[#25344f] dark:hover:bg-[#1A5370]`}
           title="Close"
         >
           <RiCloseLargeFill className="text-[24px]" />

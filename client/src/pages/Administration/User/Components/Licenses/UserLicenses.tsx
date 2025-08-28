@@ -7,11 +7,9 @@ import LicensesEditModal from "./Edit/LicenseEditModal";
 
 type UserLicensesProps = {
   id: string;
-  name: string;
-  surname: string;
 };
 
-const UserLicenses = ({ id, name, surname }: UserLicensesProps) => {
+const UserLicenses = ({ id }: UserLicensesProps) => {
   const items = useLicenseStore((state) => state.items);
   const fetchItems = useLicenseStore((state) => state.fetchItems);
   const deleteItem = useLicenseStore((state) => state.deleteItem);
@@ -59,7 +57,7 @@ const UserLicenses = ({ id, name, surname }: UserLicensesProps) => {
     <div className="flex flex-col gap-5 w-full">
       <div className="flex justify-between items-start gap-5 h-[50px]">
         <h3 className="text-2xl font-semibold">
-          You view licenses: ({[name, surname].filter(Boolean).join(" ")})
+          Licenses
         </h3>
         <LicensesAddModal userId={id} />
       </div>
